@@ -18,14 +18,21 @@ precos_desconto = navegador.find_elements(By.CSS_SELECTOR, 'span.gZmNpQ')
 descontos = navegador.find_elements(By.CSS_SELECTOR, 'div.csTVoz')
 periodos = navegador.find_elements(By.CSS_SELECTOR, 'div.gXVfCV ')
 
-for titulo, data, preco_normal, preco_desconto, desconto, periodo, link in zip(titulos, datas, precos_normal, precos_desconto, descontos, periodos, links):
-    games.append([titulo.text, 
-                  data.text.replace('Data de lançamento ', ''), 
-                  preco_normal.text.replace('Preço normal:\n', ''), 
-                  preco_desconto.text.replace('Preço promocional:\n', ''), 
-                  desconto.text, 
-                  periodo.text.replace('A oferta termina em: ', ''),
-                  link.get_attribute('href')])
-
+try:
+    carregar = navegador.find_element(By.CSS_SELECTOR, 'button.cwaeYW')
+    while carregar:
+        for titulo, data, preco_normal, preco_desconto, desconto, periodo, link in zip(titulos, datas, precos_normal, precos_desconto, descontos, periodos, links):
+            games.append([titulo.text, 
+                    data.text.replace('Data de lançamento ', ''), 
+                    preco_normal.text.replace('Preço normal:\n', ''), 
+                    preco_desconto.text.replace('Preço promocional:\n', ''), 
+                    desconto.text, 
+                    periodo.text.replace('A oferta termina em: ', ''),
+                    link.get_attribute('href')])
+        sleep(2)
+        carregar.click()
+except:
+    print("Não tem")
+        
 lista = pd.DataFrame(games, columns=['Título','Data de Lançamento', 'Preço Normal', 'Preço Promocional', 'Desconto', 'A oferta termina em', 'Link da Oferta'])
 lista.to_csv('eshop.csv', index=False)
